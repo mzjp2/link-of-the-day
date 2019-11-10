@@ -48,7 +48,7 @@ func SaveURL(svc storage.Service, url string, t time.Time) error {
 	lastScheduledTime := normaliseTime(lastScheduled.Scheduled)
 	newScheduledTime := lastScheduledTime.Add(time.Hour * 24)
 
-	_, err := svc.Save(url, normaliseTime(newScheduledTime), normTime)
+	_, err = svc.Save(url, normaliseTime(newScheduledTime), normTime)
 	if err != nil {
 		return fmt.Errorf("could not save url: %v", err)
 	}
