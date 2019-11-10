@@ -71,12 +71,24 @@ func (p *postgres) Load(id int) (*Record, error) {
 }
 
 func (p *postgres) LoadLast() (*Record, error) {
-	var record Record
-	query := "SELECT * FROM links ORDER BY id DESC LIMIT 1;"
-
-	err := p.db.QueryRow(query).Scan(&record.ID, &record.URL, &record.Count, &record.DateAdded, &record.Scheduled)
+	rows, err := p.db.Query("SELECT * FROM links ORDER BY id DESC LIMIT 1;")
 	if err != nil {
-		return nil, fmt.Errorf("could now load row: %v", err)
+		return nil, fmt.Errorf("could not load rows: %v")
+	}
+	defer rows.Close()
+
+	var record Record
+	if rows.Next() {
+		err = rows.Scan(&record.ID, &record.URL, &record.Count, &record.DateAdded, &record.Scheduled)
+		if err != nil {
+			return nil, fmt.Errorf("could not scan row: %v", err)
+		}
+	} else {
+		err = rows.Err()
+		if err != nil {
+			return nil, fmt.Errorf("could not iterate rows: %v", err)
+		}
+		return nil, nil
 	}
 
 	return &record, nil
@@ -85,7 +97,7 @@ func (p *postgres) LoadLast() (*Record, error) {
 func (p *postgres) LoadScheduled(s time.Time) (*Record, error) {
 	rows, err := p.db.Query("SELECT * FROM links where scheduled=$1 limit 1;", s)
 	if err != nil {
-		return nil, fmt.Errorf("could not load row: %v", err)
+		return nil, fmt.Errorf("could not load rows: %v", err)
 	}
 	defer rows.Close()
 
