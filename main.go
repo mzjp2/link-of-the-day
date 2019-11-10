@@ -50,6 +50,6 @@ func main() {
 	}
 	defer svc.Close()
 
-	http.Handle("/link", newHandler(time.Now(), svc))
+	http.Handle("/link", newLinkHandler(time.Now(), svc))
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
