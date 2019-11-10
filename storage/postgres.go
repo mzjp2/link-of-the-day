@@ -96,15 +96,14 @@ func (p *postgres) LoadScheduled(s time.Time) (*Record, error) {
 			return nil, fmt.Errorf("could not scan row %v", err)
 		}
 	} else {
+		err = rows.Err()
+		if err != nil {
+			return nil, fmt.Errorf("could not iterate rows: %v", err)
+		}
 		return nil, nil
 	}
 
-	err = rows.Err()
-	if err != nil {
-		return nil, fmt.Errorf("could not iterate rows: %v", err)
-	}
-
 	return &record, nil
-
+}
 
 func (p *postgres) Close() error { return p.db.Close() }
