@@ -36,14 +36,21 @@ func SaveURL(svc storage.Service, url string, t time.Time) error {
 		return fmt.Errorf("could not get last scheduled time: %v", err)
 	}
 
-	var newScheduledTime time.Time
+	normTime := normaliseTime(t)
 	if lastScheduled == nil {
-		newScheduledTime = normaliseTime(t)
-	} else {
-		lastScheduledTime := normaliseTime(lastScheduled.Scheduled)
-		newScheduledTime = lastScheduledTime.Add(time.Hour * 24)
+		_, err := svc.Save(url, normTime, normTime)
+		if err != nil {
+			return fmt.Errorf("could not save url: %v", err)
+		}
+		return nil
 	}
 
-	svc.Save(url, normaliseTime(newScheduledTime), normaliseTime(t))
+	lastScheduledTime := normaliseTime(lastScheduled.Scheduled)
+	newScheduledTime := lastScheduledTime.Add(time.Hour * 24)
+
+	_, err := svc.Save(url, normaliseTime(newScheduledTime), normTime)
+	if err != nil {
+		return fmt.Errorf("could not save url: %v", err)
+	}
 	return nil
 }

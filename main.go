@@ -26,7 +26,7 @@ func (l *linkHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		url, err := link.GetURL(l.svc, l.date)
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 	}
@@ -34,11 +34,11 @@ func (l *linkHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost || r.Method == http.MethodPut {
 		err := r.ParseForm()
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 		err = link.SaveURL(l.svc, r.Form.Get("url"), time.Now())
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 	}
 }
