@@ -10,7 +10,7 @@ import (
 	"github.com/mzjp2/link-of-the-day/storage"
 )
 
-func newHandler(date time.Time, svc storage.Service) http.Handler {
+func newLinkHandler(date time.Time, svc storage.Service) http.Handler {
 	link := new(linkHandler)
 	link.date = date
 	link.svc = svc
@@ -50,6 +50,6 @@ func main() {
 	}
 	defer svc.Close()
 
-	http.Handle("/", newHandler(time.Now(), svc))
+	http.Handle("/link", newHandler(time.Now(), svc))
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
