@@ -54,3 +54,7 @@ func SaveURL(svc storage.Service, url string, t time.Time) error {
 	}
 	return nil
 }
+
+func NothingScheduled() []byte {
+	return nil
+}

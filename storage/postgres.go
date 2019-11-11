@@ -73,7 +73,7 @@ func (p *postgres) Load(id int) (*Record, error) {
 func (p *postgres) LoadLast() (*Record, error) {
 	rows, err := p.db.Query("SELECT * FROM links ORDER BY id DESC LIMIT 1;")
 	if err != nil {
-		return nil, fmt.Errorf("could not load rows: %v")
+		return nil, fmt.Errorf("could not load rows: %v", err)
 	}
 	defer rows.Close()
 
