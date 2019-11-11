@@ -5,7 +5,7 @@ services:
     build: .
     restart: always
     environment:
-      DATABSE_URL: 'postgresql://link_db:mypass@app_postgress:5432/link_db?sslmode=disable'
+      DATABASE_URL: 'postgresql://link_db:mypass@app_postgres:5432/link_db?sslmode=disable'
       PORT: '8080'
     ports:
       - 8080:8080
