@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -43,6 +44,22 @@ func (l *linkHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func nothingScheduled(w http.ResponseWriter, r *http.Request) {
+	content, err := ioutil.ReadFile("static/nothing-scheduled.html")
+	if err != nil {
+		log.Print(err)
+	}
+	w.Write(content)
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	content, err := ioutil.ReadFile("static/home.html")
+	if err != nil {
+		log.Print(err)
+	}
+	w.Write(content)
+}
+
 func main() {
 	svc, err := storage.New(os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -50,6 +67,8 @@ func main() {
 	}
 	defer svc.Close()
 
-	http.Handle("/link", newLinkHandler(time.Now(), svc))
+	http.Handle("/link/", newLinkHandler(time.Now(), svc))
+	http.HandleFunc("/nothing-scheduled", nothingScheduled)
+	http.HandleFunc("/", homeHandler)
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
