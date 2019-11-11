@@ -2,6 +2,7 @@ package link
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/mzjp2/link-of-the-day/storage"
@@ -36,6 +37,10 @@ func SaveURL(svc storage.Service, url string, t time.Time) error {
 		return fmt.Errorf("could not get last scheduled time: %v", err)
 	}
 
+	if !strings.HasPrefix(url, "http") {
+		url = "https://" + url
+	}
+
 	normTime := normaliseTime(t)
 	if lastScheduled == nil {
 		_, err := svc.Save(url, normTime, normTime)
@@ -52,9 +57,5 @@ func SaveURL(svc storage.Service, url string, t time.Time) error {
 	if err != nil {
 		return fmt.Errorf("could not save url: %v", err)
 	}
-	return nil
-}
-
-func NothingScheduled() []byte {
 	return nil
 }

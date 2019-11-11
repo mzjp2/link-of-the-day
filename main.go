@@ -67,7 +67,7 @@ func main() {
 	}
 	defer svc.Close()
 
-	http.Handle("/link/", newLinkHandler(time.Now(), svc))
+	http.Handle("/link", newLinkHandler(time.Now(), svc))
 	http.HandleFunc("/nothing-scheduled", nothingScheduled)
 	http.HandleFunc("/", homeHandler)
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
